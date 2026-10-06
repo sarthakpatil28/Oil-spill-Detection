@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Python environment / tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Frontend builds
+dist/
+build/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Large datasets
+data/*
+!data/.gitkeep
+
+# AI model files
+*.pt
+*.pth
+*.onnx
+*.ckpt
+*.safetensors
+
+# Generated outputs
+outputs/
+results/
+runs/
+
+# Temporary images
+input_image.jpg
+output_image.jpg
+enhanced.png
