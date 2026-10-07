@@ -431,3 +431,204 @@ button {
     display: none;
   }
 }
+
+
+/* ================================
+   VESSEL INTELLIGENCE
+================================ */
+
+.vessel-panel {
+  grid-column: 1 / -1;
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid rgba(120, 190, 210, 0.14);
+  background: rgba(5, 18, 27, 0.82);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.vessel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(120, 190, 210, 0.1);
+}
+
+.vessel-header h2 {
+  margin: 7px 0 0;
+  font-size: 22px;
+}
+
+.analysis-count {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+  color: #67e8a5;
+  border: 1px solid rgba(103, 232, 165, 0.2);
+  background: rgba(103, 232, 165, 0.05);
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.vessel-table {
+  margin-top: 18px;
+  width: 100%;
+}
+
+.vessel-table-header,
+.vessel-row {
+  display: grid;
+  grid-template-columns:
+    70px
+    minmax(150px, 1.4fr)
+    minmax(90px, 1fr)
+    minmax(80px, 0.8fr)
+    minmax(80px, 0.8fr)
+    minmax(130px, 1fr)
+    minmax(170px, 1.5fr);
+  align-items: center;
+  column-gap: 12px;
+}
+
+.vessel-table-header {
+  padding: 0 14px 11px;
+  color: #587581;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.vessel-row {
+  min-height: 68px;
+  padding: 0 14px;
+  border-top: 1px solid rgba(120, 190, 210, 0.07);
+  color: #b4c7cf;
+  font-size: 12px;
+  transition: background 0.2s ease;
+}
+
+.vessel-row:hover {
+  background: rgba(83, 213, 230, 0.035);
+}
+
+.vessel-row.top-suspect {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 114, 95, 0.08),
+      transparent 70%
+    );
+  border-left: 2px solid #ff725f;
+}
+
+.rank {
+  color: #607d89;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.vessel-name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #e4eef2;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.vessel-name svg {
+  color: #53d5e6;
+}
+
+.imo {
+  color: #78929e;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.anomaly {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #8ea6b0;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.vessel-row:nth-child(2) .anomaly,
+.vessel-row:nth-child(3) .anomaly {
+  color: #ff9c70;
+}
+
+.score {
+  display: grid;
+  grid-template-columns: 48px 1fr 16px;
+  align-items: center;
+  gap: 8px;
+}
+
+.score strong {
+  color: #e9f4f7;
+  font-size: 12px;
+}
+
+.score-bar {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(120, 190, 210, 0.1);
+}
+
+.score-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    #53d5e6,
+    #ff725f
+  );
+  box-shadow: 0 0 10px rgba(255, 114, 95, 0.25);
+}
+
+.score svg {
+  color: #ff8c79;
+}
+
+.vessel-row:nth-child(n + 4) .score svg {
+  color: #6d8792;
+}
+
+.demo-note {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(120, 190, 210, 0.07);
+  color: #526c78;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+/* Responsive leaderboard */
+
+@media (max-width: 950px) {
+  .vessel-panel {
+    overflow-x: auto;
+  }
+
+  .vessel-table {
+    min-width: 850px;
+  }
+}
+
+@media (max-width: 600px) {
+  .vessel-header {
+    align-items: flex-start;
+    gap: 12px;
+    flex-direction: column;
+  }
+}

@@ -1,3 +1,4 @@
+
 import {
   Activity,
   AlertTriangle,
@@ -9,6 +10,10 @@ import {
   ShieldCheck,
   Waves,
 } from "lucide-react";
+
+
+import VesselLeaderboard from "../components/VesselLeaderboard";
+
 
 function CommandCenter() {
   return (
@@ -140,7 +145,8 @@ function CommandCenter() {
               <strong>DETECTED</strong>
             </div>
           </div>
-        </section>
+        </section>	
+	<VesselLeaderboard />
       </main>
     </div>
   );
