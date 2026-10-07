@@ -139,3 +139,114 @@ def get_anomalies():
             }
         ]
     }
+
+# --------------------------------------------------
+# Suspect Scoring Engine
+# --------------------------------------------------
+
+def calculate_suspect_score(
+    speed_anomaly,
+    course_anomaly,
+    proximity,
+    additional_evidence
+):
+    score = (
+        speed_anomaly * 0.40
+        + course_anomaly * 0.25
+        + proximity * 0.25
+        + additional_evidence * 0.10
+    )
+
+    return round(score, 1)
+
+
+@app.get("/api/suspects")
+def get_suspects():
+
+    evidence = [
+        {
+            "vessel": "VANGUARD",
+            "imo": "9182734",
+            "speed_anomaly": 100,
+            "course_anomaly": 92,
+            "proximity": 94,
+            "additional_evidence": 88
+        },
+        {
+            "vessel": "OCEAN STAR",
+            "imo": "9273611",
+            "speed_anomaly": 72,
+            "course_anomaly": 86,
+            "proximity": 62,
+            "additional_evidence": 58
+        },
+        {
+            "vessel": "MERIDIAN",
+            "imo": "9018273",
+            "speed_anomaly": 42,
+            "course_anomaly": 38,
+            "proximity": 72,
+            "additional_evidence": 44
+        },
+        {
+            "vessel": "ATLANTIS",
+            "imo": "9348217",
+            "speed_anomaly": 28,
+            "course_anomaly": 24,
+            "proximity": 38,
+            "additional_evidence": 35
+        },
+        {
+            "vessel": "PACIFIC",
+            "imo": "9182731",
+            "speed_anomaly": 18,
+            "course_anomaly": 20,
+            "proximity": 22,
+            "additional_evidence": 18
+        }
+    ]
+
+    suspects = []
+
+    for vessel in evidence:
+        score = calculate_suspect_score(
+            vessel["speed_anomaly"],
+            vessel["course_anomaly"],
+            vessel["proximity"],
+            vessel["additional_evidence"]
+        )
+
+        suspects.append({
+            "vessel": vessel["vessel"],
+            "imo": vessel["imo"],
+            "score": score,
+            "evidence": {
+                "speed_anomaly": vessel["speed_anomaly"],
+                "course_anomaly": vessel["course_anomaly"],
+                "proximity": vessel["proximity"],
+                "additional_evidence": vessel["additional_evidence"]
+            }
+        })
+
+    suspects.sort(
+        key=lambda vessel: vessel["score"],
+        reverse=True
+    )
+
+    for rank, vessel in enumerate(suspects, start=1):
+        vessel["rank"] = rank
+
+    return {
+        "status": "success",
+        "disclaimer": (
+            "Suspect scores are evidence-based rankings "
+            "and do not establish responsibility or guilt."
+        ),
+        "weights": {
+            "speed_anomaly": 0.40,
+            "course_anomaly": 0.25,
+            "proximity": 0.25,
+            "additional_evidence": 0.10
+        },
+        "data": suspects
+    }
