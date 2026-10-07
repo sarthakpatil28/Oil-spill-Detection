@@ -14,6 +14,7 @@ import {
 
 import VesselLeaderboard from "../components/VesselLeaderboard";
 
+import IncidentMap from "../components/IncidentMap";
 
 function CommandCenter() {
   return (
@@ -50,38 +51,7 @@ function CommandCenter() {
             </div>
           </div>
 
-          <div className="map-placeholder">
-            <div className="map-grid" />
-
-            <div className="map-center">
-              <div className="spill-ring">
-                <div className="spill-core" />
-              </div>
-
-              <div className="map-label">
-                <strong>DETECTED SLICK</strong>
-                <span>12.4 km²</span>
-              </div>
-            </div>
-
-            <div className="vessel vessel-one">
-              <Anchor size={14} />
-            </div>
-
-            <div className="vessel vessel-two">
-              <Anchor size={14} />
-            </div>
-
-            <div className="map-overlay top-left">
-              <Satellite size={14} />
-              SENTINEL-1 SAR
-            </div>
-
-            <div className="map-overlay bottom-right">
-              <Radio size={14} />
-              AIS LIVE
-            </div>
-          </div>
+         <IncidentMap />
         </section>
 
         <aside className="intelligence-panel">

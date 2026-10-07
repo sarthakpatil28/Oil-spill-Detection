@@ -632,3 +632,487 @@ button {
     flex-direction: column;
   }
 }
+
+
+
+/* ================================
+   INTERACTIVE INCIDENT MAP
+================================ */
+
+.incident-map {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  overflow: hidden;
+}
+
+.leaflet-map {
+  width: 100%;
+  height: 100%;
+  background: #071a24;
+  z-index: 1;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #071a24;
+  font-family: inherit;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid rgba(83, 213, 230, 0.25) !important;
+  box-shadow: none !important;
+}
+
+.leaflet-control-zoom a {
+  background: rgba(5, 18, 27, 0.9) !important;
+  color: #53d5e6 !important;
+  border-color: rgba(83, 213, 230, 0.15) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: rgba(15, 45, 58, 0.95) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(3, 13, 20, 0.8) !important;
+  color: #607d89 !important;
+}
+
+.leaflet-control-attribution a {
+  color: #53d5e6 !important;
+}
+
+.map-live-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 500;
+
+  padding: 9px 12px;
+
+  color: #67e8a5;
+  background: rgba(3, 13, 20, 0.88);
+  border: 1px solid rgba(103, 232, 165, 0.2);
+  border-radius: 7px;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+
+  backdrop-filter: blur(8px);
+}
+
+.vessel-marker {
+  width: 30px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: #53d5e6;
+  background: rgba(5, 30, 40, 0.95);
+  border: 1px solid rgba(83, 213, 230, 0.7);
+
+  box-shadow:
+    0 0 0 4px rgba(83, 213, 230, 0.08),
+    0 0 18px rgba(83, 213, 230, 0.25);
+}
+
+.origin-marker {
+  position: relative;
+
+  width: 30px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: #ff9b8e;
+  background: rgba(80, 25, 20, 0.95);
+  border: 2px solid #ff725f;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  box-shadow: 0 0 18px rgba(255, 114, 95, 0.45);
+}
+
+.origin-pulse {
+  position: absolute;
+  inset: -8px;
+
+  border: 1px solid rgba(255, 114, 95, 0.45);
+  border-radius: 50%;
+
+  animation: originPulse 2s infinite;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #071923;
+  color: #dceaf0;
+  border: 1px solid rgba(83, 213, 230, 0.2);
+}
+
+.leaflet-popup-content {
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.leaflet-popup-content strong {
+  color: #53d5e6;
+}
+
+@keyframes originPulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.8;
+  }
+
+  70% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .incident-map {
+    height: 430px;
+  }
+}
+
+
+/* =========================================
+   OCEAN SENTINEL — LIGHT MARITIME THEME
+========================================= */
+
+:root {
+  color: #183247;
+  background: #f4f8fb;
+}
+
+body {
+  background:
+    radial-gradient(
+      circle at 85% 10%,
+      rgba(50, 170, 210, 0.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #f7fafc 0%,
+      #eef5f8 50%,
+      #f8fbfd 100%
+    );
+  color: #183247;
+}
+
+.command-center {
+  background:
+    linear-gradient(
+      rgba(30, 100, 130, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(30, 100, 130, 0.035) 1px,
+      transparent 1px
+    );
+  background-size: 40px 40px;
+}
+
+/* ---------- TOP BAR ---------- */
+
+.topbar {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #d8e5eb;
+  box-shadow: 0 8px 30px rgba(27, 67, 88, 0.07);
+}
+
+.brand-icon {
+  color: #159bb5;
+  background: #edfafd;
+  border-color: #b9e5ee;
+}
+
+.brand h1 {
+  color: #17364a;
+}
+
+.brand span {
+  color: #718896;
+}
+
+.system-status {
+  color: #159a67;
+}
+
+.status-dot {
+  background: #22b878;
+  box-shadow: 0 0 12px rgba(34, 184, 120, 0.35);
+}
+
+/* ---------- PANELS ---------- */
+
+.hero-panel,
+.intelligence-panel,
+.bottom-panel,
+.vessel-panel {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #d8e5eb;
+  box-shadow: 0 8px 30px rgba(27, 67, 88, 0.055);
+}
+
+.panel-heading {
+  border-bottom-color: #e1ebef;
+}
+
+.panel-heading h2,
+.vessel-header h2 {
+  color: #183247;
+}
+
+.eyebrow {
+  color: #159bb5;
+}
+
+.incident-status {
+  background: #fff8ed;
+  border-color: #f2d4a7;
+  color: #c87516;
+}
+
+/* ---------- MAP ---------- */
+
+.map-placeholder {
+  background: #eaf4f7;
+}
+
+.map-grid {
+  background:
+    linear-gradient(
+      rgba(30, 130, 160, 0.07) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(30, 130, 160, 0.07) 1px,
+      transparent 1px
+    );
+}
+
+.map-label strong {
+  color: #d56c16;
+}
+
+.map-label span {
+  color: #526e7d;
+}
+
+.map-overlay {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: #d3e2e8;
+  color: #58717e;
+  box-shadow: 0 4px 15px rgba(27, 67, 88, 0.08);
+}
+
+.bottom-right {
+  color: #159a67;
+}
+
+.vessel {
+  background: #ffffff;
+  color: #078ca7;
+  border-color: #4dc4d6;
+  box-shadow: 0 5px 15px rgba(23, 139, 164, 0.18);
+}
+
+/* ---------- INTELLIGENCE ---------- */
+
+.panel-title {
+  color: #526f7e;
+  border-bottom-color: #e1ebef;
+}
+
+.metric {
+  border-bottom-color: #e5edf1;
+}
+
+.metric span {
+  color: #78909d;
+}
+
+.metric strong {
+  color: #183247;
+}
+
+.alert-button {
+  background: #fff4f3;
+  border-color: #f0b4ae;
+  color: #d9534f;
+}
+
+.alert-button:hover {
+  background: #ffebe9;
+}
+
+/* ---------- DRIFT TIMELINE ---------- */
+
+.timeline-line {
+  background: #c9dbe2;
+}
+
+.timeline-point::before {
+  background: #edf4f7;
+  border-color: #8eabb7;
+}
+
+.timeline-point span {
+  color: #78909d;
+}
+
+.timeline-point strong {
+  color: #294758;
+}
+
+.timeline-point.active::before {
+  background: #ff786c;
+  border-color: #ff9b91;
+  box-shadow: 0 0 15px rgba(255, 120, 108, 0.28);
+}
+
+/* ---------- VESSEL INTELLIGENCE ---------- */
+
+.analysis-count {
+  color: #159a67;
+  background: #effbf6;
+  border-color: #bfe8d5;
+}
+
+.vessel-table-header {
+  color: #718995;
+}
+
+.vessel-row {
+  color: #526d7c;
+  border-top-color: #e5edf1;
+}
+
+.vessel-row:hover {
+  background: #f5fbfd;
+}
+
+.vessel-row.top-suspect {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 114, 95, 0.07),
+      transparent 70%
+    );
+  border-left-color: #ff725f;
+}
+
+.vessel-name {
+  color: #183247;
+}
+
+.vessel-name svg {
+  color: #159bb5;
+}
+
+.imo {
+  color: #78909d;
+}
+
+.anomaly {
+  color: #68818e;
+}
+
+.score strong {
+  color: #294758;
+}
+
+.score-bar {
+  background: #e5eef2;
+}
+
+.score-bar span {
+  background: linear-gradient(
+    90deg,
+    #29a9bd,
+    #f07868
+  );
+}
+
+.demo-note {
+  color: #78909d;
+  border-top-color: #e5edf1;
+}
+
+/* ---------- LEAFLET ---------- */
+
+.leaflet-container {
+  background: #dceff4;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid #cbdde4 !important;
+  box-shadow: 0 4px 12px rgba(27, 67, 88, 0.12) !important;
+}
+
+.leaflet-control-zoom a {
+  background: #ffffff !important;
+  color: #168ca5 !important;
+  border-color: #d8e5eb !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #f0f9fb !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: #718995 !important;
+}
+
+.leaflet-control-attribution a {
+  color: #168ca5 !important;
+}
+
+.map-live-badge {
+  background: rgba(255, 255, 255, 0.94);
+  color: #159a67;
+  border-color: #bfe8d5;
+  box-shadow: 0 4px 15px rgba(27, 67, 88, 0.1);
+}
+
+.vessel-marker {
+  color: #078ca7;
+  background: #ffffff;
+  border-color: #35b4c8;
+  box-shadow:
+    0 0 0 4px rgba(53, 180, 200, 0.08),
+    0 4px 15px rgba(27, 67, 88, 0.18);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #ffffff;
+  color: #294758;
+  border-color: #d8e5eb;
+}
+
+.leaflet-popup-content strong {
+  color: #168ca5;
+}
