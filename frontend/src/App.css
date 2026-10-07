@@ -1116,3 +1116,161 @@ body {
 .leaflet-popup-content strong {
   color: #168ca5;
 }
+
+/* =========================================
+   ANOMALY INTELLIGENCE
+========================================= */
+
+.anomaly-panel {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #d8e5eb;
+  border-radius: 18px;
+  padding: 28px;
+  margin-top: 24px;
+  box-shadow: 0 8px 30px rgba(27, 67, 88, 0.055);
+}
+
+.anomaly-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e1ebef;
+}
+
+.anomaly-header h2 {
+  margin: 6px 0 0;
+  color: #183247;
+}
+
+.anomaly-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 9px 13px;
+
+  color: #c87516;
+  background: #fff8ed;
+  border: 1px solid #f2d4a7;
+  border-radius: 8px;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.anomaly-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.anomaly-card {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 16px;
+  align-items: center;
+
+  padding: 20px 4px;
+
+  border-bottom: 1px solid #e5edf1;
+}
+
+.anomaly-icon {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+
+  color: #168ca5;
+  background: #edfafd;
+  border: 1px solid #b9e5ee;
+}
+
+.anomaly-high .anomaly-icon {
+  color: #d9534f;
+  background: #fff2f1;
+  border-color: #f0b4ae;
+}
+
+.anomaly-main {
+  min-width: 0;
+}
+
+.anomaly-vessel {
+  color: #183247;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.anomaly-type {
+  margin-top: 4px;
+
+  color: #168ca5;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.anomaly-high .anomaly-type {
+  color: #d9534f;
+}
+
+.anomaly-main p {
+  margin: 7px 0 0;
+
+  color: #718995;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.anomaly-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.severity {
+  padding: 4px 8px;
+
+  border-radius: 5px;
+
+  color: #b66c14;
+  background: #fff8ed;
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.anomaly-high .severity {
+  color: #d9534f;
+  background: #fff2f1;
+}
+
+.anomaly-meta strong {
+  color: #183247;
+  font-size: 17px;
+}
+
+@media (max-width: 650px) {
+  .anomaly-panel {
+    padding: 20px;
+  }
+
+  .anomaly-card {
+    grid-template-columns: 38px 1fr;
+  }
+
+  .anomaly-meta {
+    grid-column: 2;
+    align-items: flex-start;
+    flex-direction: row;
+  }
+}

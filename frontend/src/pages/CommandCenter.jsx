@@ -16,6 +16,8 @@ import VesselLeaderboard from "../components/VesselLeaderboard";
 
 import IncidentMap from "../components/IncidentMap";
 
+import AnomalyPanel from "../components/AnomalyPanel";
+
 function CommandCenter() {
   return (
     <div className="command-center">
@@ -115,7 +117,8 @@ function CommandCenter() {
               <strong>DETECTED</strong>
             </div>
           </div>
-        </section>	
+        </section>
+	<AnomalyPanel />	
 	<VesselLeaderboard />
       </main>
     </div>
