@@ -45,6 +45,7 @@ Desktop.ini
 # Large datasets
 data/*
 !data/.gitkeep
+!data/accessais_sample.csv
 
 # AI model files
 *.pt
