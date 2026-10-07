@@ -12,24 +12,52 @@ function VesselLeaderboard() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/vessels")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch vessel data");
-        }
+  const loadVesselIntelligence = async () => {
+    try {
+      setLoading(true);
 
-        return response.json();
-      })
-      .then((result) => {
-        setVessels(result.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Unable to connect to intelligence API");
-        setLoading(false);
+      const [vesselsResponse, suspectsResponse] = await Promise.all([
+        fetch("http://127.0.0.1:8000/api/vessels"),
+        fetch("http://127.0.0.1:8000/api/suspects"),
+      ]);
+
+      if (!vesselsResponse.ok || !suspectsResponse.ok) {
+        throw new Error("Failed to load vessel intelligence");
+      }
+
+      const vesselsResult = await vesselsResponse.json();
+      const suspectsResult = await suspectsResponse.json();
+
+      const vesselMap = new Map(
+        vesselsResult.data.map((vessel) => [
+          vessel.imo,
+          vessel,
+        ])
+      );
+
+      const combinedData = suspectsResult.data.map((suspect) => {
+        const vessel = vesselMap.get(suspect.imo);
+
+        return {
+          ...vessel,
+          ...suspect,
+        };
       });
-  }, []);
+
+      setVessels(combinedData);
+      setError("");
+    } catch (err) {
+      console.error("Vessel intelligence error:", err);
+      setError("Unable to connect to intelligence API");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadVesselIntelligence();
+}, []);
+
+      
 
   return (
     <section className="vessel-panel">
