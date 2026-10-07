@@ -324,3 +324,35 @@ def calculate_drift():
         },
         "message": "Backward drift reconstruction completed for demonstration."
     }
+
+
+# --------------------------------------------------
+# Alert Dispatcher
+# --------------------------------------------------
+
+from pydantic import BaseModel
+
+
+class AlertRequest(BaseModel):
+    incident: str
+    priority: str
+    vessel: str
+    score: float
+
+
+@app.post("/api/alert")
+def dispatch_alert(request: AlertRequest):
+    return {
+        "status": "success",
+        "alert": {
+            "incident": request.incident,
+            "priority": request.priority,
+            "top_suspect": request.vessel,
+            "confidence": request.score,
+            "dispatch_status": "SENT"
+        },
+        "message": (
+            "Emergency incident alert dispatched successfully "
+            "for demonstration."
+        )
+    }

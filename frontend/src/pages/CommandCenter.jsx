@@ -13,6 +13,8 @@ import IncidentMap from "../components/IncidentMap";
 import AnomalyPanel from "../components/AnomalyPanel";
 
 function CommandCenter() {
+  const [alertStatus, setAlertStatus] = useState("READY");
+const [alertLoading, setAlertLoading] = useState(false);
   const [driftData, setDriftData] = useState(null);
   const [driftLoading, setDriftLoading] = useState(true);
 
@@ -41,6 +43,48 @@ function CommandCenter() {
 
     loadDrift();
   }, []);
+
+
+
+const dispatchAlert = async () => {
+  try {
+    setAlertLoading(true);
+    setAlertStatus("DISPATCHING...");
+
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/alert",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          incident: "Arabian Sea Oil Spill",
+          priority: "HIGH",
+          vessel: "VANGUARD",
+          score: 95.3,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Alert dispatch failed");
+    }
+
+    const result = await response.json();
+
+    if (result.status === "success") {
+      setAlertStatus("ALERT SENT");
+    }
+  } catch (error) {
+    console.error("Alert dispatch error:", error);
+    setAlertStatus("DISPATCH FAILED");
+  } finally {
+    setAlertLoading(false);
+  }
+};
+
+
 
   const trajectory = driftData?.data?.trajectory || [];
 
@@ -108,10 +152,17 @@ function CommandCenter() {
             <strong>VANGUARD</strong>
           </div>
 
-          <button className="alert-button">
-            <Bell size={17} />
-            DISPATCH ALERT
-          </button>
+          <button
+  className={`alert-button ${
+    alertStatus === "ALERT SENT" ? "alert-sent" : ""
+  }`}
+  onClick={dispatchAlert}
+  disabled={alertLoading}
+>
+  <Bell size={17} />
+
+  {alertLoading ? "DISPATCHING..." : alertStatus}
+</button>
         </aside>
 
         <section className="bottom-panel">
