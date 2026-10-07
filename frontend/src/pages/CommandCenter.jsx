@@ -1,24 +1,49 @@
+import { useEffect, useState } from "react";
 
 import {
   Activity,
   AlertTriangle,
-  Anchor,
   Bell,
-  Map,
-  Radio,
-  Satellite,
   ShieldCheck,
   Waves,
 } from "lucide-react";
 
-
 import VesselLeaderboard from "../components/VesselLeaderboard";
-
 import IncidentMap from "../components/IncidentMap";
-
 import AnomalyPanel from "../components/AnomalyPanel";
 
 function CommandCenter() {
+  const [driftData, setDriftData] = useState(null);
+  const [driftLoading, setDriftLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadDrift() {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/drift", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Drift API request failed");
+        }
+
+        const data = await response.json();
+        setDriftData(data);
+      } catch (error) {
+        console.error("Drift API error:", error);
+      } finally {
+        setDriftLoading(false);
+      }
+    }
+
+    loadDrift();
+  }, []);
+
+  const trajectory = driftData?.data?.trajectory || [];
+
   return (
     <div className="command-center">
       <header className="topbar">
@@ -40,6 +65,7 @@ function CommandCenter() {
       </header>
 
       <main className="dashboard">
+
         <section className="hero-panel">
           <div className="panel-heading">
             <div>
@@ -53,7 +79,7 @@ function CommandCenter() {
             </div>
           </div>
 
-         <IncidentMap />
+          <IncidentMap trajectory={trajectory} />
         </section>
 
         <aside className="intelligence-panel">
@@ -94,32 +120,37 @@ function CommandCenter() {
             DRIFT RECONSTRUCTION
           </div>
 
-          <div className="timeline">
-            <div className="timeline-line" />
-
-            <div className="timeline-point">
-              <span>T − 3H</span>
-              <strong>ORIGIN</strong>
+          {driftLoading ? (
+            <div className="drift-loading">
+              CALCULATING DRIFT TRAJECTORY...
             </div>
+          ) : trajectory.length > 0 ? (
+            <div className="timeline">
+              <div className="timeline-line" />
 
-            <div className="timeline-point">
-              <span>T − 2H</span>
-              <strong>DRIFT</strong>
+              {trajectory.map((point, index) => (
+                <div
+                  className={`timeline-point ${
+                    index === trajectory.length - 1 ? "active" : ""
+                  }`}
+                  key={`${point.time}-${index}`}
+                >
+                  <span>{point.time}</span>
+                  <strong>{point.label}</strong>
+                </div>
+              ))}
             </div>
-
-            <div className="timeline-point">
-              <span>T − 1H</span>
-              <strong>DRIFT</strong>
+          ) : (
+            <div className="drift-loading">
+              DRIFT DATA UNAVAILABLE
             </div>
-
-            <div className="timeline-point active">
-              <span>NOW</span>
-              <strong>DETECTED</strong>
-            </div>
-          </div>
+          )}
         </section>
-	<AnomalyPanel />	
-	<VesselLeaderboard />
+
+        <AnomalyPanel />
+
+        <VesselLeaderboard />
+
       </main>
     </div>
   );

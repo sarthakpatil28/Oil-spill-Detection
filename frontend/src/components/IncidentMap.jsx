@@ -35,20 +35,20 @@ const originIcon = L.divIcon({
   iconAnchor: [17, 17],
 });
 
-const center = [15.5, 68.5];
+const detectedIcon = L.divIcon({
+  className: "custom-detected-marker",
+  html: `
+    <div class="detected-marker">
+      <span>●</span>
+    </div>
+  `,
+  iconSize: [34, 34],
+  iconAnchor: [17, 17],
+});
 
+const center = [15.75, 68.65];
 
-const driftPath = [
-  [15.15, 67.85],
-  [15.28, 68.02],
-  [15.4, 68.2],
-  [15.5, 68.5],
-  [15.6, 68.7],
-  [15.72, 68.85],
-];
-
-
-function IncidentMap() {
+function IncidentMap({ trajectory = [] }) {
   const [vessels, setVessels] = useState([]);
 
   useEffect(() => {
@@ -67,6 +67,20 @@ function IncidentMap() {
         console.error("Vessel API error:", error);
       });
   }, []);
+
+  const driftPath = trajectory.map((point) => [
+    point.latitude,
+    point.longitude,
+  ]);
+
+  const origin = trajectory.find(
+    (point) => point.label === "ORIGIN"
+  );
+
+  const detected = trajectory.find(
+    (point) => point.label === "DETECTED"
+  );
+
   return (
     <div className="incident-map">
       <MapContainer
@@ -76,13 +90,13 @@ function IncidentMap() {
         zoomControl={true}
         className="leaflet-map"
       >
-  <TileLayer
-  attribution='&copy; OpenStreetMap'
-  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-/>
+        <TileLayer
+          attribution="&copy; OpenStreetMap"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
         <Circle
-          center={[15.5, 68.5]}
+          center={[15.90, 68.90]}
           radius={22000}
           pathOptions={{
             color: "#ff8b52",
@@ -92,38 +106,73 @@ function IncidentMap() {
           }}
         />
 
-        <Marker
-          position={[15.15, 67.85]}
-          icon={originIcon}
-        >
-          <Popup>
-            <strong>Estimated Spill Origin</strong>
-            <br />
-            Reconstruction window: T − 3H
-          </Popup>
-        </Marker>
+        {origin && (
+          <Marker
+            position={[
+              origin.latitude,
+              origin.longitude,
+            ]}
+            icon={originIcon}
+          >
+            <Popup>
+              <strong>Estimated Spill Origin</strong>
+              <br />
+              Reconstruction window: {origin.time}
+              <br />
+              Latitude: {origin.latitude}
+              <br />
+              Longitude: {origin.longitude}
+            </Popup>
+          </Marker>
+        )}
 
-        <Polyline
-          positions={driftPath}
-          pathOptions={{
-            color: "#53d5e6",
-            weight: 3,
-            dashArray: "8 8",
-          }}
-        />
+        {detected && (
+          <Marker
+            position={[
+              detected.latitude,
+              detected.longitude,
+            ]}
+            icon={detectedIcon}
+          >
+            <Popup>
+              <strong>Detected Spill</strong>
+              <br />
+              Current position: NOW
+              <br />
+              Latitude: {detected.latitude}
+              <br />
+              Longitude: {detected.longitude}
+            </Popup>
+          </Marker>
+        )}
+
+        {driftPath.length > 1 && (
+          <Polyline
+            positions={driftPath}
+            pathOptions={{
+              color: "#0b9fb3",
+              weight: 4,
+              opacity: 0.9,
+              dashArray: "10 8",
+            }}
+          />
+        )}
 
         {vessels.map((vessel) => (
           <Marker
             key={vessel.name}
-            position={[vessel.latitude, vessel.longitude]}
+            position={[
+              vessel.latitude,
+              vessel.longitude,
+            ]}
             icon={vesselIcon}
           >
             <Popup>
               <strong>{vessel.name}</strong>
               <br />
-              Speed: {vessel.speed}
+              Speed: {vessel.speed} kn
               <br />
-              Course: {vessel.course}
+              Course: {vessel.course}°
               <br />
               Suspect score: {vessel.score}%
             </Popup>

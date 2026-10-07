@@ -250,3 +250,77 @@ def get_suspects():
         },
         "data": suspects
     }
+
+
+# --------------------------------------------------
+# Oil Spill Segmentation
+# --------------------------------------------------
+
+from pydantic import BaseModel
+
+
+class SegmentationRequest(BaseModel):
+    image_name: str
+
+
+@app.post("/api/segment")
+def segment_oil_spill(request: SegmentationRequest):
+    return {
+        "status": "success",
+        "source": request.image_name,
+        "detection": {
+            "detected": True,
+            "class": "oil_spill",
+            "confidence": 0.94,
+            "area_km2": 12.4
+        },
+        "message": (
+            "Oil spill segmentation result generated "
+            "for demonstration."
+        )
+    }
+@app.post("/api/drift")
+def calculate_drift():
+    return {
+        "status": "success",
+        "model": "Physics-based drift reconstruction",
+        "time_step_minutes": 10,
+        "wind_factor": 0.03,
+        "data": {
+            "current": {
+                "speed": 0.42,
+                "direction": 118
+            },
+            "wind": {
+                "speed": 18.0,
+                "direction": 105
+            },
+            "trajectory": [
+                {
+                    "time": "T-3H",
+                    "label": "ORIGIN",
+                    "latitude": 15.62,
+                    "longitude": 68.42
+                },
+                {
+                    "time": "T-2H",
+                    "label": "DRIFT",
+                    "latitude": 15.71,
+                    "longitude": 68.58
+                },
+                {
+                    "time": "T-1H",
+                    "label": "DRIFT",
+                    "latitude": 15.80,
+                    "longitude": 68.74
+                },
+                {
+                    "time": "NOW",
+                    "label": "DETECTED",
+                    "latitude": 15.90,
+                    "longitude": 68.90
+                }
+            ]
+        },
+        "message": "Backward drift reconstruction completed for demonstration."
+    }
