@@ -5,6 +5,7 @@ import {
   Navigation,
   Target,
 } from "lucide-react";
+import { getAnomalies } from "../services/api";
 
 function AnomalyPanel() {
   const [anomalies, setAnomalies] = useState([]);
@@ -12,34 +13,34 @@ function AnomalyPanel() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/anomalies")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch anomaly data");
+    let mounted = true;
+    getAnomalies()
+      .then((data) => {
+        if (mounted) {
+          setAnomalies(data);
+          setLoading(false);
         }
-
-        return response.json();
-      })
-      .then((result) => {
-        setAnomalies(result.data);
-        setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
-        setError("Unable to connect to anomaly engine");
-        setLoading(false);
+        if (mounted) {
+          console.error("Anomaly API error:", err);
+          setError(err.message || "Unable to connect to anomaly engine");
+          setLoading(false);
+        }
       });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const getIcon = (type) => {
-    if (type === "SPEED DROP") {
+    if (type?.includes("SPEED") || type?.includes("SOG")) {
       return <Activity size={17} />;
     }
-
-    if (type === "COURSE SHIFT") {
+    if (type?.includes("COURSE") || type?.includes("COG") || type?.includes("SHIFT")) {
       return <Navigation size={17} />;
     }
-
     return <Target size={17} />;
   };
 
@@ -70,16 +71,22 @@ function AnomalyPanel() {
         </div>
       )}
 
-      {!loading && !error && (
+      {!loading && !error && anomalies.length === 0 && (
+        <div className="api-state">
+          No anomalous vessel behaviors detected in active AIS window.
+        </div>
+      )}
+
+      {!loading && !error && anomalies.length > 0 && (
         <div className="anomaly-list">
-          {anomalies.map((anomaly) => (
+          {anomalies.map((anomaly, idx) => (
             <div
               className={`anomaly-card ${
-                anomaly.severity === "HIGH"
+                anomaly.severity === "HIGH" || anomaly.severity === "CRITICAL"
                   ? "anomaly-high"
                   : "anomaly-medium"
               }`}
-              key={anomaly.imo}
+              key={`${anomaly.imo}-${idx}`}
             >
               <div className="anomaly-icon">
                 {getIcon(anomaly.type)}

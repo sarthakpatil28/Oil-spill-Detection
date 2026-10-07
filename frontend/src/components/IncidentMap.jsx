@@ -5,12 +5,22 @@ import {
   Marker,
   Popup,
   Polyline,
+  useMap,
 } from "react-leaflet";
-
 import { useEffect, useState } from "react";
-
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { getVessels } from "../services/api";
+
+function MapController({ center, zoom }) {
+  const map = useMap();
+  useEffect(() => {
+    if (center && Array.isArray(center) && center.length === 2 && !isNaN(center[0]) && !isNaN(center[1])) {
+      map.setView(center, zoom);
+    }
+  }, [center, zoom, map]);
+  return null;
+}
 
 const vesselIcon = L.divIcon({
   className: "custom-vessel-marker",
@@ -46,102 +56,104 @@ const detectedIcon = L.divIcon({
   iconAnchor: [17, 17],
 });
 
-const center = [15.75, 68.65];
-
-function IncidentMap({ trajectory = [] }) {
+function IncidentMap({ trajectory = [], origin = null, detected = null }) {
   const [vessels, setVessels] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/vessels")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch vessels");
+    let mounted = true;
+    getVessels()
+      .then((data) => {
+        if (mounted) {
+          setVessels(data.filter((v) => v.latitude && v.longitude));
         }
-
-        return response.json();
       })
-      .then((result) => {
-        setVessels(result.data);
-      })
-      .catch((error) => {
-        console.error("Vessel API error:", error);
+      .catch((err) => {
+        console.error("Vessel tracking error:", err);
       });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const driftPath = trajectory.map((point) => [
-    point.latitude,
-    point.longitude,
-  ]);
+  const driftPath = trajectory
+    .filter((pt) => pt.latitude !== undefined && pt.longitude !== undefined)
+    .map((pt) => [pt.latitude, pt.longitude]);
 
-  const origin = trajectory.find(
-    (point) => point.label === "ORIGIN"
-  );
+  // Dynamic map center resolution
+  const defaultCenter = [25.0, -40.0];
+  let center = defaultCenter;
 
-  const detected = trajectory.find(
-    (point) => point.label === "DETECTED"
-  );
+  if (detected?.latitude && detected?.longitude) {
+    center = [detected.latitude, detected.longitude];
+  } else if (origin?.latitude && origin?.longitude) {
+    center = [origin.latitude, origin.longitude];
+  } else if (vessels.length > 0) {
+    center = [vessels[0].latitude, vessels[0].longitude];
+  }
 
   return (
     <div className="incident-map">
       <MapContainer
         center={center}
-        zoom={6}
+        zoom={vessels.length > 0 || detected ? 8 : 4}
         scrollWheelZoom={true}
         zoomControl={true}
         className="leaflet-map"
       >
         <TileLayer
-          attribution="&copy; OpenStreetMap"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <MapController center={center} zoom={vessels.length > 0 || detected ? 8 : 4} />
 
-        <Circle
-          center={[15.90, 68.90]}
-          radius={22000}
-          pathOptions={{
-            color: "#ff8b52",
-            fillColor: "#ff7b45",
-            fillOpacity: 0.18,
-            weight: 2,
-          }}
-        />
+        {detected?.latitude && detected?.longitude && (
+          <Circle
+            center={[detected.latitude, detected.longitude]}
+            radius={detected.radius_meters || 15000}
+            pathOptions={{
+              color: "#ff8b52",
+              fillColor: "#ff7b45",
+              fillOpacity: 0.22,
+              weight: 2,
+            }}
+          />
+        )}
 
-        {origin && (
+        {origin?.latitude && origin?.longitude && (
           <Marker
-            position={[
-              origin.latitude,
-              origin.longitude,
-            ]}
+            position={[origin.latitude, origin.longitude]}
             icon={originIcon}
           >
             <Popup>
-              <strong>Estimated Spill Origin</strong>
+              <strong>Estimated Spill Origin (Hindcast)</strong>
               <br />
-              Reconstruction window: {origin.time}
+              Time: {origin.timestamp || origin.time || "Origin"}
               <br />
-              Latitude: {origin.latitude}
+              Latitude: {Number(origin.latitude).toFixed(4)}
               <br />
-              Longitude: {origin.longitude}
+              Longitude: {Number(origin.longitude).toFixed(4)}
             </Popup>
           </Marker>
         )}
 
-        {detected && (
+        {detected?.latitude && detected?.longitude && (
           <Marker
-            position={[
-              detected.latitude,
-              detected.longitude,
-            ]}
+            position={[detected.latitude, detected.longitude]}
             icon={detectedIcon}
           >
             <Popup>
-              <strong>Detected Spill</strong>
+              <strong>Detected Slick (Satellite / Observation)</strong>
               <br />
-              Current position: NOW
+              Latitude: {Number(detected.latitude).toFixed(4)}
               <br />
-              Latitude: {detected.latitude}
-              <br />
-              Longitude: {detected.longitude}
+              Longitude: {Number(detected.longitude).toFixed(4)}
+              {detected.area_sq_km && (
+                <>
+                  <br />
+                  Estimated Area: {detected.area_sq_km} km²
+                </>
+              )}
             </Popup>
           </Marker>
         )}
@@ -153,28 +165,25 @@ function IncidentMap({ trajectory = [] }) {
               color: "#0b9fb3",
               weight: 4,
               opacity: 0.9,
-              dashArray: "10 8",
+              dashArray: "8 6",
             }}
           />
         )}
 
-        {vessels.map((vessel) => (
+        {vessels.map((vessel, idx) => (
           <Marker
-            key={vessel.name}
-            position={[
-              vessel.latitude,
-              vessel.longitude,
-            ]}
+            key={`${vessel.imo || vessel.mmsi || idx}`}
+            position={[vessel.latitude, vessel.longitude]}
             icon={vesselIcon}
           >
             <Popup>
               <strong>{vessel.name}</strong>
               <br />
-              Speed: {vessel.speed} kn
+              MMSI: {vessel.mmsi || "—"} | IMO: {vessel.imo || "—"}
               <br />
-              Course: {vessel.course}°
+              Speed: {vessel.speed} kn | Course: {vessel.course}°
               <br />
-              Suspect score: {vessel.score}%
+              Position: ({Number(vessel.latitude).toFixed(4)}, {Number(vessel.longitude).toFixed(4)})
             </Popup>
           </Marker>
         ))}

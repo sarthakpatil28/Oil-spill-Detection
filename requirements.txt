@@ -1,0 +1,22 @@
+# AquaGuard AI — Integrated Backend Requirements (M1 + M2 + M3 + M4)
+
+# Member 2: Core REST Orchestration, Drift Engine, Anomaly Detection
+fastapi>=0.100.0
+uvicorn[standard]>=0.22.0
+pandas>=2.0.0
+numpy>=1.24.0
+pydantic>=2.0.0
+python-multipart>=0.0.6
+
+# Member 1: Satellite SAR Vision Pipeline & Super-Resolution
+opencv-python-headless>=4.8.0
+gradio_client>=0.10.0
+requests>=2.28.0
+earthengine-api>=0.1.350
+
+# Member 3: NOAA AIS Zstandard Decompression
+zstandard>=0.21.0
+
+# Testing & Integration
+pytest>=7.4.0
+httpx>=0.24.0
