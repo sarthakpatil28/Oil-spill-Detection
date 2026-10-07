@@ -100,3 +100,42 @@ def get_vessels():
 }
         ]
     }
+
+
+
+
+# --------------------------------------------------
+# Vessel Anomaly Intelligence
+# --------------------------------------------------
+
+@app.get("/api/anomalies")
+def get_anomalies():
+    return {
+        "status": "success",
+        "data": [
+            {
+                "vessel": "VANGUARD",
+                "imo": "9182734",
+                "type": "SPEED DROP",
+                "severity": "HIGH",
+                "description": "Sudden reduction in vessel speed detected.",
+                "score": 94.2
+            },
+            {
+                "vessel": "OCEAN STAR",
+                "imo": "9273611",
+                "type": "COURSE SHIFT",
+                "severity": "MEDIUM",
+                "description": "Significant deviation from expected course detected.",
+                "score": 71.8
+            },
+            {
+                "vessel": "MERIDIAN",
+                "imo": "9018273",
+                "type": "PROXIMITY",
+                "severity": "MEDIUM",
+                "description": "Vessel passed within the reconstructed incident corridor.",
+                "score": 48.5
+            }
+        ]
+    }
